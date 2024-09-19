@@ -1,3 +1,4 @@
+# mrwellsdavid/unsw-nb15
 import pandas as pd
 from sklearn.pipeline import Pipeline
 from sklearn.impute import SimpleImputer
@@ -33,8 +34,8 @@ def data_preprocessing(ds_train, ds_test):
     return X_train, y_train, X_test, y_test
 
 
-dataset_train_full = pd.read_csv("./unsw-nb15/UNSW_NB15_training-set.csv")
-dataset_test_full = pd.read_csv("./unsw-nb15/UNSW_NB15_testing-set.csv")
+dataset_train_full = pd.read_csv("../unsw-nb15/UNSW_NB15_training-set.csv")
+dataset_test_full = pd.read_csv("../unsw-nb15/UNSW_NB15_testing-set.csv")
 
 dataset_train = dataset_train_full.drop("attack_cat", axis=1)
 dataset_test = dataset_test_full.drop("attack_cat", axis=1)
