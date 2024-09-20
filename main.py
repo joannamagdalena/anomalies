@@ -8,14 +8,11 @@ from sklearn.model_selection import train_test_split
 
 def data_preprocessing(ds_train, ds_test):
     # numerical columns
-    num_cols = [col for col in ds_train.columns if ds_train[col].dtype in ["int64", "float64"]]
+    num_cols = [col for col in ds_train.columns if ds_train[col].dtype in ["int64", "float64"]
+                and col != "label"]
     # categorical columns to o-h encoding
     cat_cols = [col for col in ds_train.columns if ds_train[col].dtype == "object"
                 and ds_train[col].nunique() < 15]
-    print(ds_train[cat_cols])
-
-    pre_ds_train = ds_train[num_cols + cat_cols].copy()
-    pre_ds_test = ds_test[num_cols + cat_cols].copy()
 
     num_transformer = SimpleImputer(strategy="most_frequent")
     cat_transformer = Pipeline(steps=[("imputer", SimpleImputer(strategy="most_frequent")),
@@ -24,19 +21,20 @@ def data_preprocessing(ds_train, ds_test):
     preprocessor = ColumnTransformer(transformers=[("num", num_transformer, num_cols),
                                                    ("cat", cat_transformer, cat_cols)])
 
-    preprocessor.fit_transform(pre_ds_train)
-    preprocessor.fit(pre_ds_test)
-    print(pre_ds_train.head())
+    # removing categorical columns with too many unique values; dividing datasets
+    X_train_full = ds_train[num_cols + cat_cols].copy()
+    X_test = ds_test[num_cols + cat_cols].copy()
+    y_train_full = pd.DataFrame(ds_train["label"].copy())
+    y_test = pd.DataFrame(ds_test["label"].copy())
 
-    y_train_full = pre_ds_train["label"]
-    y_test = pre_ds_test["label"]
-    X_train_full = pre_ds_train.drop("label", axis=1)
-    X_test = pre_ds_test.drop("label", axis=1)
+    # preprocessing
+    pre_X_train_full = pd.DataFrame(preprocessor.fit_transform(X_train_full), columns=preprocessor.get_feature_names_out())
+    pre_X_test = pd.DataFrame(preprocessor.fit_transform(X_test), columns=preprocessor.get_feature_names_out())
 
-    X_train, X_valid, y_train, y_valid = train_test_split(X_train_full, y_train_full,
+    X_train, X_valid, y_train, y_valid = train_test_split(pre_X_train_full, y_train_full,
                                                           train_size=0.8, test_size=0.2, random_state=1)
 
-    return X_train, y_train, X_valid, y_valid, X_test, y_test
+    return X_train, y_train, X_valid, y_valid, pre_X_test, y_test
 
 
 dataset_train_full = pd.read_csv("../unsw-nb15/UNSW_NB15_training-set.csv")
