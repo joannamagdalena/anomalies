@@ -1,10 +1,14 @@
 # mrwellsdavid/unsw-nb15
 import pandas as pd
+import numpy as np
 from sklearn.pipeline import Pipeline
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.model_selection import train_test_split
+from sklearn.ensemble import IsolationForest
+from sklearn.metrics import confusion_matrix
+
 
 def data_preprocessing(ds_train, ds_test):
     # numerical columns
@@ -44,4 +48,17 @@ dataset_train = dataset_train_full.drop("attack_cat", axis=1)
 dataset_test = dataset_test_full.drop("attack_cat", axis=1)
 
 X_train, y_train, X_valid, y_valid, X_test, y_test = data_preprocessing(dataset_train, dataset_test)
+
+
+### isolation forest
+
+model_IF = IsolationForest(random_state=42)
+model_IF.fit(X_train, y_train)
+
+validation_IF = model_IF.predict(X_valid)
+validation_IF[validation_IF == -1] = 0
+cm_valid = confusion_matrix(y_valid, validation_IF)
+print(cm_valid)
+print("% of corrected predictions: ", (cm_valid[0,0]+cm_valid[1,1])/np.matrix(cm_valid).sum())
+
 
