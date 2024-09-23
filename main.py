@@ -8,6 +8,7 @@ from sklearn.compose import ColumnTransformer
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import IsolationForest
 from sklearn.metrics import confusion_matrix
+from sklearn.cluster import KMeans
 
 
 def data_preprocessing(ds_train, ds_test):
@@ -58,8 +59,17 @@ model_IF.fit(X_train, y_train)
 
 validation_IF = model_IF.predict(X_valid)
 validation_IF[validation_IF == -1] = 0
-cm_valid = confusion_matrix(y_valid, validation_IF)
-print(cm_valid)
-print("% of corrected predictions: ", (cm_valid[0, 0]+cm_valid[1, 1])/np.matrix(cm_valid).sum())
+cm_valid_IF = confusion_matrix(y_valid, validation_IF)
+print(cm_valid_IF)
+print("% of corrected predictions: ", (cm_valid_IF[0, 0]+cm_valid_IF[1, 1])/np.matrix(cm_valid_IF).sum())
 
 
+### k-means
+
+model_kmeans = KMeans(n_clusters=2, init="k-means++")
+model_kmeans.fit(X_train, y_train)
+
+validation_kmeans = model_kmeans.predict(X_valid)
+cm_valid_kmeans = confusion_matrix(y_valid, validation_kmeans)
+print(cm_valid_kmeans)
+print("% of corrected predictions: ", (cm_valid_kmeans[0, 0]+cm_valid_kmeans[1, 1])/np.matrix(cm_valid_kmeans).sum())
