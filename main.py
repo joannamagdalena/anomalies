@@ -35,6 +35,7 @@ def data_preprocessing(ds_train, ds_test):
     pre_X_train_full = pd.DataFrame(preprocessor.fit_transform(X_train_full), columns=preprocessor.get_feature_names_out())
     pre_X_test = pd.DataFrame(preprocessor.fit_transform(X_test), columns=preprocessor.get_feature_names_out())
 
+    #dividing into training and validation datasets
     X_train, X_valid, y_train, y_valid = train_test_split(pre_X_train_full, y_train_full,
                                                           train_size=0.8, test_size=0.2, random_state=1)
 
@@ -59,6 +60,6 @@ validation_IF = model_IF.predict(X_valid)
 validation_IF[validation_IF == -1] = 0
 cm_valid = confusion_matrix(y_valid, validation_IF)
 print(cm_valid)
-print("% of corrected predictions: ", (cm_valid[0,0]+cm_valid[1,1])/np.matrix(cm_valid).sum())
+print("% of corrected predictions: ", (cm_valid[0, 0]+cm_valid[1, 1])/np.matrix(cm_valid).sum())
 
 
