@@ -12,6 +12,14 @@ from sklearn.cluster import KMeans
 from sklearn.neighbors import LocalOutlierFactor
 
 
+def choose_features(ds, y, possible_features):
+    correlated_features = []
+    x = list(y)
+    for feature in possible_features:
+        if abs(np.corrcoef(x, list(ds[feature]))[0][1]) > 0.3:
+            correlated_features.append(feature)
+    return correlated_features
+
 def data_preprocessing(ds_train, ds_test):
     # numerical columns
     num_cols = [col for col in ds_train.columns if ds_train[col].dtype in ["int64", "float64"]
@@ -41,7 +49,15 @@ def data_preprocessing(ds_train, ds_test):
     X_train, X_valid, y_train, y_valid = train_test_split(pre_X_train_full, y_train_full,
                                                           train_size=0.8, test_size=0.2, random_state=1)
 
-    return X_train, y_train, X_valid, y_valid, pre_X_test, y_test
+    # choosing features for training (correlated numerical columns)
+    num_features_for_training = choose_features(X_train, y_train, num_cols)
+    features_to_drop = list(set(num_cols) - set(num_features_for_training))
+
+    X_train = X_train.drop(features_to_drop, axis=1)
+    X_valid = X_valid.drop(features_to_drop, axis=1)
+    X_test = pre_X_test.drop(features_to_drop, axis=1)
+
+    return X_train, y_train, X_valid, y_valid, X_test, y_test
 
 
 dataset_train_full = pd.read_csv("../unsw-nb15/UNSW_NB15_training-set.csv")
@@ -50,8 +66,9 @@ dataset_test_full = pd.read_csv("../unsw-nb15/UNSW_NB15_testing-set.csv")
 dataset_train = dataset_train_full.drop(["attack_cat", "id"], axis=1)
 dataset_test = dataset_test_full.drop(["attack_cat", "id"], axis=1)
 
-X_train, y_train, X_valid, y_valid, X_test, y_test = data_preprocessing(dataset_train, dataset_test)
 
+X_train, y_train, X_valid, y_valid, X_test, y_test = data_preprocessing(dataset_train, dataset_test)
+print(X_test)
 
 ### isolation forest
 
