@@ -72,7 +72,7 @@ X_train, y_train, X_valid, y_valid, X_test, y_test = data_preprocessing(dataset_
 
 ### isolation forest
 
-model_IF = IsolationForest(random_state=42)
+model_IF = IsolationForest(n_estimators=200, random_state=42)
 model_IF.fit(X_train, y_train)
 
 validation_IF = model_IF.predict(X_valid)
