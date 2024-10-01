@@ -58,6 +58,7 @@ def data_preprocessing(ds_train, ds_test):
 
     # choosing features for training (correlated numerical columns)
     num_features_for_training = choose_numerical_features(ds_train, num_cols)
+    # choosing features for training (correlated categorical columns)
     cat_features_for_training = choose_categorical_features(ds_train, cat_cols)
 
     # removing categorical columns with too many unique values; dividing datasets
