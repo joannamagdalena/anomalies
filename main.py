@@ -12,7 +12,7 @@ from sklearn.cluster import KMeans
 from sklearn.neighbors import LocalOutlierFactor
 
 
-def choose_features(ds, possible_features):
+def choose_numerical_features(ds, possible_features):
     correlated_features = []
     x = list(ds["label"])
     for feature in possible_features:
@@ -29,7 +29,7 @@ def data_preprocessing(ds_train, ds_test):
                 and ds_train[col].nunique() < 15]
 
     # choosing features for training (correlated numerical columns)
-    num_features_for_training = choose_features(ds_train, num_cols)
+    num_features_for_training = choose_numerical_features(ds_train, num_cols)
     features_to_drop = list(set(num_cols) - set(num_features_for_training))
 
     ds_train = ds_train.drop(features_to_drop, axis=1)
