@@ -20,6 +20,9 @@ def choose_numerical_features(ds, possible_features):
             correlated_features.append(feature)
     return correlated_features
 
+def choose_categorical_features(ds, possible_features):
+
+
 def data_preprocessing(ds_train, ds_test):
     # numerical columns
     num_cols = [col for col in ds_train.columns if ds_train[col].dtype in ["int64", "float64"]
@@ -30,6 +33,7 @@ def data_preprocessing(ds_train, ds_test):
 
     # choosing features for training (correlated numerical columns)
     num_features_for_training = choose_numerical_features(ds_train, num_cols)
+    cat_features_for_training = choose_categorical_features(ds_train, cat_cols)
     features_to_drop = list(set(num_cols) - set(num_features_for_training))
 
     ds_train = ds_train.drop(features_to_drop, axis=1)
