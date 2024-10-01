@@ -59,23 +59,20 @@ def data_preprocessing(ds_train, ds_test):
     # choosing features for training (correlated numerical columns)
     num_features_for_training = choose_numerical_features(ds_train, num_cols)
     cat_features_for_training = choose_categorical_features(ds_train, cat_cols)
-    features_to_drop = list(set(num_cols) - set(num_features_for_training))
 
-    ds_train = ds_train.drop(features_to_drop, axis=1)
-    ds_test = ds_test.drop(features_to_drop, axis=1)
+    # removing categorical columns with too many unique values; dividing datasets
+    X_train_full = ds_train[num_features_for_training + cat_features_for_training].copy()
+    X_test = ds_test[num_features_for_training + cat_features_for_training].copy()
+    y_train_full = pd.DataFrame(ds_train["label"].copy())
+    y_test = pd.DataFrame(ds_test["label"].copy())
+
 
     num_transformer = SimpleImputer(strategy="most_frequent")
     cat_transformer = Pipeline(steps=[("imputer", SimpleImputer(strategy="most_frequent")),
                                       ("onehot", OneHotEncoder(handle_unknown="ignore"))])
 
     preprocessor = ColumnTransformer(transformers=[("num", num_transformer, num_features_for_training),
-                                                   ("cat", cat_transformer, cat_cols)])
-
-    # removing categorical columns with too many unique values; dividing datasets
-    X_train_full = ds_train[num_features_for_training + cat_cols].copy()
-    X_test = ds_test[num_features_for_training + cat_cols].copy()
-    y_train_full = pd.DataFrame(ds_train["label"].copy())
-    y_test = pd.DataFrame(ds_test["label"].copy())
+                                                   ("cat", cat_transformer, cat_features_for_training)])
 
     # preprocessing
     pre_X_train_full = pd.DataFrame(preprocessor.fit_transform(X_train_full), columns=preprocessor.get_feature_names_out())
@@ -85,7 +82,6 @@ def data_preprocessing(ds_train, ds_test):
     #dividing into training and validation datasets
     X_train, X_valid, y_train, y_valid = train_test_split(pre_X_train_full, y_train_full,
                                                           train_size=0.8, test_size=0.2, random_state=1)
-
 
     return X_train, y_train, X_valid, y_valid, pre_X_test, y_test
 
