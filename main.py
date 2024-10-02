@@ -1,5 +1,6 @@
 # mrwellsdavid/unsw-nb15
 # https://stackoverflow.com/questions/46498455/categorical-features-correlation/46498792#46498792
+# https://towardsdatascience.com/the-search-for-categorical-correlation-a1cf7f1888c9
 import pandas as pd
 import numpy as np
 from sklearn.pipeline import Pipeline
@@ -13,13 +14,42 @@ from sklearn.cluster import KMeans
 from sklearn.neighbors import LocalOutlierFactor
 import scipy.stats as ss
 
-
+"""
 def choose_numerical_features(ds, possible_features):
     correlated_features = []
     x = list(ds["label"])
     for feature in possible_features:
         if abs(np.corrcoef(x, list(ds[feature]))[0][1]) > 0.3:
             correlated_features.append(feature)
+    return correlated_features
+"""
+
+def correlation_ratio(categories, measurements):
+    fcat, _ = pd.factorize(categories)
+    cat_num = np.max(fcat)+1
+    y_avg_array = np.zeros(cat_num)
+    n_array = np.zeros(cat_num)
+    for i in range(0, cat_num):
+        cat_measures = measurements[np.argwhere(fcat == i).flatten()]
+        n_array[i] = len(cat_measures)
+        y_avg_array[i] = np.average(cat_measures)
+    y_total_avg = np.sum(np.multiply(y_avg_array,n_array))/np.sum(n_array)
+    numerator = np.sum(np.multiply(n_array, np.power(np.subtract(y_avg_array, y_total_avg), 2)))
+    denominator = np.sum(np.power(np.subtract(measurements, y_total_avg), 2))
+    if numerator == 0:
+        eta = 0.0
+    else:
+        eta = np.sqrt(numerator/denominator)
+    return eta
+
+
+def choose_numerical_features(ds, possible_features):
+    correlated_features = []
+    x = ds["label"]
+    for feature in possible_features:
+        if correlation_ratio(x, ds[feature]) > 0.3:
+            correlated_features.append(feature)
+
     return correlated_features
 
 
