@@ -41,13 +41,10 @@ def correlation_ratio(categories, measurements):
 def choose_numerical_features(ds, possible_features):
     correlated_features = []
     x = ds["label"]
-    r = 0.95
 
-    while len(correlated_features) == 0 or r < 0:
-        for feature in possible_features:
-            if correlation_ratio(x, ds[feature]) > r:
-                correlated_features.append(feature)
-        r -= 0.05
+    for feature in possible_features:
+        if correlation_ratio(x, ds[feature]) > 0.3:
+            correlated_features.append(feature)
 
     return correlated_features
 
@@ -108,7 +105,8 @@ def data_preprocessing(ds_train, ds_test):
     pre_X_train_full = pd.DataFrame(preprocessor.fit_transform(X_train_full), columns=preprocessor.get_feature_names_out())
     pre_X_test = pd.DataFrame(preprocessor.fit_transform(X_test), columns=preprocessor.get_feature_names_out())
 
-    # dividing into training and validation datasets
+
+    #dividing into training and validation datasets
     X_train, X_valid, y_train, y_valid = train_test_split(pre_X_train_full, y_train_full,
                                                           train_size=0.8, test_size=0.2, random_state=1)
 
