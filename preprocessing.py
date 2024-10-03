@@ -77,10 +77,10 @@ def choose_categorical_features(ds, possible_features):
 def data_preprocessing(ds_train, ds_test):
     # numerical columns
     num_cols = [col for col in ds_train.columns if ds_train[col].dtype in ["int64", "float64"]
-                and col != "label"]
+                and col not in ["label", "sport", "dsport", "is_sm_ips_ports", "is_ftp_login"]]
     # categorical columns to o-h encoding
-    cat_cols = [col for col in ds_train.columns if ds_train[col].dtype == "object"
-                and ds_train[col].nunique() < 15]
+    cat_cols = [col for col in ds_train.columns if (ds_train[col].dtype == "object" or col not in num_cols)
+                and col != "label" and ds_train[col].nunique() < 15]
 
     # choosing features for training (correlated numerical columns)
     num_features_for_training = choose_numerical_features(ds_train, num_cols)
