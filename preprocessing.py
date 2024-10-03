@@ -43,7 +43,7 @@ def choose_numerical_features(ds, possible_features):
     x = ds["label"]
 
     for feature in possible_features:
-        if correlation_ratio(x, ds[feature]) > 0.3:
+        if correlation_ratio(x, ds[feature]) > 0.4:
             correlated_features.append(feature)
 
     return correlated_features
@@ -69,7 +69,7 @@ def choose_categorical_features(ds, possible_features):
     x = list(ds["label"])
     for feature in possible_features:
         cm = pd.crosstab(x, ds[feature])
-        if cramers_v(cm.values) > 0.5:
+        if cramers_v(cm.values) > 0.9:
             correlated_features.append(feature)
     return correlated_features
 
@@ -77,7 +77,7 @@ def choose_categorical_features(ds, possible_features):
 def data_preprocessing(ds_train, ds_test):
     # numerical columns
     num_cols = [col for col in ds_train.columns if ds_train[col].dtype in ["int64", "float64"]
-                and col not in ["label", "sport", "dsport", "is_sm_ips_ports", "is_ftp_login"]]
+                and col not in ["label", "sport", "dsport", "is_sm_ips_ports", "is_ftp_login", "swin", "dwin"]]
     # categorical columns to o-h encoding
     cat_cols = [col for col in ds_train.columns if (ds_train[col].dtype == "object" or col not in num_cols)
                 and col != "label" and ds_train[col].nunique() < 15]
@@ -93,9 +93,11 @@ def data_preprocessing(ds_train, ds_test):
     y_train_full = pd.DataFrame(ds_train["label"].copy())
     y_test = pd.DataFrame(ds_test["label"].copy())
     print(X_train_full)
+    print(num_features_for_training)
+    print(cat_features_for_training)
 
     num_transformer = SimpleImputer(strategy="most_frequent")
-    cat_transformer = Pipeline(steps=[("imputer", SimpleImputer(strategy="most_frequent")),
+    cat_transformer = Pipeline(steps=[("imputer", SimpleImputer(strategy="most_frequent",)),
                                       ("onehot", OneHotEncoder(handle_unknown="ignore"))])
 
     preprocessor = ColumnTransformer(transformers=[("num", num_transformer, num_features_for_training),
@@ -108,6 +110,6 @@ def data_preprocessing(ds_train, ds_test):
 
     #dividing into training and validation datasets
     X_train, X_valid, y_train, y_valid = train_test_split(pre_X_train_full, y_train_full,
-                                                          train_size=0.8, test_size=0.2, random_state=1)
+                                                          train_size=0.8, test_size=0.2, random_state=0)
 
     return X_train, y_train, X_valid, y_valid, pre_X_test, y_test
