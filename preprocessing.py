@@ -95,7 +95,6 @@ def data_preprocessing(ds_train, ds_test):
     print(X_train_full)
     print(num_features_for_training)
     print(cat_features_for_training)
-    print(type(X_train_full["swin"][5]))
 
     num_transformer = SimpleImputer(strategy="most_frequent")
     cat_transformer = Pipeline(steps=[("imputer", SimpleImputer(strategy="most_frequent",)),
