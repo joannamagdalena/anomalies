@@ -101,9 +101,8 @@ def data_preprocessing(ds_train, ds_test):
                                       ("onehot", OneHotEncoder(handle_unknown="ignore"))])
 
     preprocessor = ColumnTransformer(transformers=[("num", num_transformer, num_features_for_training),
-                                                   ("cat", cat_transformer, cat_features_for_training)])
+                                                   ("cat", cat_transformer, cat_features_for_training)], sparse_threshold=0)
 
-    print(preprocessor.fit_transform(X_test))
     # preprocessing
     pre_X_train_full = pd.DataFrame(preprocessor.fit_transform(X_train_full), columns=preprocessor.get_feature_names_out())
     pre_X_test = pd.DataFrame(preprocessor.fit_transform(X_test), columns=preprocessor.get_feature_names_out())
