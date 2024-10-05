@@ -43,7 +43,7 @@ def choose_numerical_features(ds, possible_features):
     x = ds["label"]
 
     for feature in possible_features:
-        if correlation_ratio(x, ds[feature]) > 0.3:
+        if correlation_ratio(x, ds[feature]) > 0.5:
             correlated_features.append(feature)
 
     return correlated_features
@@ -69,7 +69,7 @@ def choose_categorical_features(ds, possible_features):
     x = list(ds["label"])
     for feature in possible_features:
         cm = pd.crosstab(x, ds[feature])
-        if cramers_v(cm.values) > 0.41:
+        if cramers_v(cm.values) > 0.5:
             correlated_features.append(feature)
     return correlated_features
 
@@ -92,9 +92,7 @@ def data_preprocessing(ds_train, ds_test):
     X_test = ds_test[num_features_for_training + cat_features_for_training].copy()
     y_train_full = pd.DataFrame(ds_train["label"].copy())
     y_test = pd.DataFrame(ds_test["label"].copy())
-    print(X_train_full)
-    print(num_features_for_training)
-    print(cat_features_for_training)
+
 
     num_transformer = SimpleImputer(strategy="most_frequent")
     cat_transformer = Pipeline(steps=[("imputer", SimpleImputer(strategy="most_frequent",)),
