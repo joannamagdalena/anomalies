@@ -14,6 +14,9 @@ dataset_test_full = pd.read_csv("../unsw-nb15/UNSW_NB15_testing-set.csv")
 dataset_train = dataset_train_full.drop(["attack_cat", "id"], axis=1)
 dataset_test = dataset_test_full.drop(["attack_cat", "id"], axis=1)
 
+dataset_train[["label", "is_sm_ips_ports", "is_ftp_login", "swin", "dwin"]].astype("string")
+dataset_test[["label", "is_sm_ips_ports", "is_ftp_login", "swin", "dwin"]].astype("string")
+
 X_train, y_train, X_valid, y_valid, X_test, y_test = data_preprocessing(dataset_train, dataset_test)
 
 

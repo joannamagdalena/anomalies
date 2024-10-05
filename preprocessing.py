@@ -43,7 +43,7 @@ def choose_numerical_features(ds, possible_features):
     x = ds["label"]
 
     for feature in possible_features:
-        if correlation_ratio(x, ds[feature]) > 0.4:
+        if correlation_ratio(x, ds[feature]) > 0.7:
             correlated_features.append(feature)
 
     return correlated_features
@@ -69,7 +69,7 @@ def choose_categorical_features(ds, possible_features):
     x = list(ds["label"])
     for feature in possible_features:
         cm = pd.crosstab(x, ds[feature])
-        if cramers_v(cm.values) > 0.9:
+        if cramers_v(cm.values) > 0.3:
             correlated_features.append(feature)
     return correlated_features
 
