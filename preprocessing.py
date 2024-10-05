@@ -43,7 +43,7 @@ def choose_numerical_features(ds, possible_features):
     x = ds["label"]
 
     for feature in possible_features:
-        if correlation_ratio(x, ds[feature]) > 0.7:
+        if correlation_ratio(x, ds[feature]) > 0.3:
             correlated_features.append(feature)
 
     return correlated_features
@@ -69,7 +69,7 @@ def choose_categorical_features(ds, possible_features):
     x = list(ds["label"])
     for feature in possible_features:
         cm = pd.crosstab(x, ds[feature])
-        if cramers_v(cm.values) > 0.3:
+        if cramers_v(cm.values) > 0.41:
             correlated_features.append(feature)
     return correlated_features
 
@@ -95,6 +95,7 @@ def data_preprocessing(ds_train, ds_test):
     print(X_train_full)
     print(num_features_for_training)
     print(cat_features_for_training)
+    print(type(X_train_full["swin"][5]))
 
     num_transformer = SimpleImputer(strategy="most_frequent")
     cat_transformer = Pipeline(steps=[("imputer", SimpleImputer(strategy="most_frequent",)),
@@ -103,6 +104,7 @@ def data_preprocessing(ds_train, ds_test):
     preprocessor = ColumnTransformer(transformers=[("num", num_transformer, num_features_for_training),
                                                    ("cat", cat_transformer, cat_features_for_training)])
 
+    print(preprocessor.fit_transform(X_test))
     # preprocessing
     pre_X_train_full = pd.DataFrame(preprocessor.fit_transform(X_train_full), columns=preprocessor.get_feature_names_out())
     pre_X_test = pd.DataFrame(preprocessor.fit_transform(X_test), columns=preprocessor.get_feature_names_out())
