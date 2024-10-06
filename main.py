@@ -36,7 +36,7 @@ validation_IF[validation_IF == -1] = 0
 print(type(validation_IF))
 cm_valid_IF = confusion_matrix(y_valid, validation_IF)
 print(cm_valid_IF)
-print("% of corrected predictions: ", (cm_valid_IF[0, 0]+cm_valid_IF[1, 1])/np.matrix(cm_valid_IF).sum())
+print("% of corrected predictions [IF]: ", (cm_valid_IF[0, 0]+cm_valid_IF[1, 1])/np.matrix(cm_valid_IF).sum())
 
 ### k-means
 
@@ -46,7 +46,7 @@ model_kmeans.fit(X_train, y_train)
 validation_kmeans = model_kmeans.predict(X_valid)
 cm_valid_kmeans = confusion_matrix(y_valid, validation_kmeans)
 print(cm_valid_kmeans)
-print("% of corrected predictions: ", (cm_valid_kmeans[0, 0]+cm_valid_kmeans[1, 1]) / np.matrix(cm_valid_kmeans).sum())
+print("% of corrected predictions [kMeans]: ", (cm_valid_kmeans[0, 0]+cm_valid_kmeans[1, 1]) / np.matrix(cm_valid_kmeans).sum())
 
 
 ### LOF
@@ -58,7 +58,7 @@ validation_LOF = model_LOF.fit_predict(X_valid)
 validation_LOF[validation_LOF == -1] = 0
 cm_valid_LOF = confusion_matrix(y_valid, validation_LOF)
 print(cm_valid_LOF)
-print("% of corrected predictions: ", (cm_valid_LOF[0, 0]+cm_valid_LOF[1, 1]) / np.matrix(cm_valid_LOF).sum())
+print("% of corrected predictions [LOF]: ", (cm_valid_LOF[0, 0]+cm_valid_LOF[1, 1]) / np.matrix(cm_valid_LOF).sum())
 
 
 ### mixed
