@@ -93,6 +93,11 @@ def data_preprocessing(ds_train, ds_test):
     y_train_full = pd.DataFrame(ds_train["label"].copy())
     y_test = pd.DataFrame(ds_test["label"].copy())
 
+    # regularization
+    for num in num_features_for_training:
+        m = max(abs(max(X_train_full[num])), abs(max(X_test[num])))
+        X_train_full[num] = X_train_full[num] / m
+        X_test[num] = X_test[num] / m
 
     num_transformer = SimpleImputer(strategy="most_frequent")
     cat_transformer = Pipeline(steps=[("imputer", SimpleImputer(strategy="most_frequent",)),
@@ -104,7 +109,6 @@ def data_preprocessing(ds_train, ds_test):
     # preprocessing
     pre_X_train_full = pd.DataFrame(preprocessor.fit_transform(X_train_full), columns=preprocessor.get_feature_names_out())
     pre_X_test = pd.DataFrame(preprocessor.fit_transform(X_test), columns=preprocessor.get_feature_names_out())
-
 
     #dividing into training and validation datasets
     X_train, X_valid, y_train, y_valid = train_test_split(pre_X_train_full, y_train_full,

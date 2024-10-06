@@ -6,6 +6,7 @@ from sklearn.metrics import confusion_matrix
 from sklearn.cluster import KMeans
 from sklearn.neighbors import LocalOutlierFactor
 from preprocessing import data_preprocessing
+from sklearn.linear_model import LogisticRegression
 
 
 dataset_train_full = pd.read_csv("../unsw-nb15/UNSW_NB15_training-set.csv")
@@ -18,7 +19,8 @@ type_change = ["is_sm_ips_ports", "is_ftp_login", "swin", "dwin"]
 dataset_train[type_change] = dataset_train[type_change].astype(str)
 dataset_test[type_change] = dataset_test[type_change].astype(str)
 
-
+dataset_train["label"] = 1 - dataset_train["label"]
+dataset_test["label"] = 1 - dataset_train["label"]
 
 X_train, y_train, X_valid, y_valid, X_test, y_test = data_preprocessing(dataset_train, dataset_test)
 
@@ -26,7 +28,8 @@ X_train, y_train, X_valid, y_valid, X_test, y_test = data_preprocessing(dataset_
 ### isolation forest
 
 model_IF = IsolationForest(n_estimators=200, random_state=42, warm_start=True)
-model_IF.fit(X_train, y_train)
+#model_IF.fit(X_train, y_train)
+model_IF.fit(X_train)
 
 validation_IF = model_IF.predict(X_valid)
 validation_IF[validation_IF == -1] = 0
@@ -73,3 +76,9 @@ validation_mixed = np.array(validation_mixed)
 cm_valid_mixed = confusion_matrix(y_valid, validation_mixed)
 print(cm_valid_mixed)
 print("% of corrected predictions: ", (cm_valid_mixed[0, 0]+cm_valid_mixed[1, 1])/np.matrix(cm_valid_mixed).sum())
+
+
+### logistic regression
+
+model_LG = LogisticRegression(random_state=0)
+model_LG.fit(X_train, y_train)
