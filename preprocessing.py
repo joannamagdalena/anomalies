@@ -28,7 +28,7 @@ def correlation_ratio(categories, measurements):
         cat_measures = measurements[np.argwhere(fcat == i).flatten()]
         n_array[i] = len(cat_measures)
         y_avg_array[i] = np.average(cat_measures)
-    y_total_avg = np.sum(np.multiply(y_avg_array,n_array))/np.sum(n_array)
+    y_total_avg = np.sum(np.multiply(y_avg_array, n_array))/np.sum(n_array)
     numerator = np.sum(np.multiply(n_array, np.power(np.subtract(y_avg_array, y_total_avg), 2)))
     denominator = np.sum(np.power(np.subtract(measurements, y_total_avg), 2))
     if numerator == 0:
@@ -40,7 +40,7 @@ def correlation_ratio(categories, measurements):
 
 def choose_numerical_features(ds, possible_features):
     correlated_features = []
-    x = ds["label"]
+    x = ds["label"].astype(str)
 
     for feature in possible_features:
         if correlation_ratio(x, ds[feature]) > 0.5:
@@ -66,7 +66,7 @@ def cramers_v(cm):
 
 def choose_categorical_features(ds, possible_features):
     correlated_features = []
-    x = list(ds["label"])
+    x = list(ds["label"].astype(str))
     for feature in possible_features:
         cm = pd.crosstab(x, ds[feature])
         if cramers_v(cm.values) > 0.5:
