@@ -91,3 +91,11 @@ print("% of corrected predictions [LR]: ", (cm_valid_LR[0, 0]+cm_valid_LR[1, 1])
 
 
 ### k-nn
+
+knn = KNeighborsClassifier(n_neighbors=5)
+knn.fit(X_train, y_train)
+
+validation_KNN = knn.predict(X_valid)
+cm_valid_KNN = confusion_matrix(y_valid, validation_KNN)
+print(cm_valid_KNN)
+print("% of corrected predictions [KNN]: ", (cm_valid_KNN[0, 0]+cm_valid_KNN[1, 1]) / np.matrix(cm_valid_KNN).sum())
