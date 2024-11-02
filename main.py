@@ -7,6 +7,7 @@ from sklearn.cluster import KMeans
 from sklearn.neighbors import LocalOutlierFactor
 from preprocessing import data_preprocessing
 from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
 
 
 dataset_train_full = pd.read_csv("../unsw-nb15/UNSW_NB15_training-set.csv")
@@ -87,3 +88,6 @@ validation_LR = model_LR.predict(X_valid)
 cm_valid_LR = confusion_matrix(y_valid, validation_LR)
 print(cm_valid_LR)
 print("% of corrected predictions [LR]: ", (cm_valid_LR[0, 0]+cm_valid_LR[1, 1]) / np.matrix(cm_valid_LR).sum())
+
+
+### k-nn
