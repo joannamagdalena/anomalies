@@ -62,6 +62,7 @@ print(cm_valid_LOF)
 print("% of corrected predictions [LOF]: ", (cm_valid_LOF[0, 0]+cm_valid_LOF[1, 1]) / np.matrix(cm_valid_LOF).sum())
 
 
+'''
 ### mixed
 
 validation_mixed = []
@@ -77,7 +78,7 @@ validation_mixed = np.array(validation_mixed)
 cm_valid_mixed = confusion_matrix(y_valid, validation_mixed)
 print(cm_valid_mixed)
 print("% of corrected predictions: ", (cm_valid_mixed[0, 0]+cm_valid_mixed[1, 1]) / np.matrix(cm_valid_mixed).sum())
-
+'''
 
 ### logistic regression
 
@@ -99,3 +100,4 @@ validation_KNN = knn.predict(X_valid)
 cm_valid_KNN = confusion_matrix(y_valid, validation_KNN)
 print(cm_valid_KNN)
 print("% of corrected predictions [KNN]: ", (cm_valid_KNN[0, 0]+cm_valid_KNN[1, 1]) / np.matrix(cm_valid_KNN).sum())
+
