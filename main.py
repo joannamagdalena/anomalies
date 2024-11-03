@@ -84,7 +84,7 @@ print("% of corrected predictions: ", (cm_valid_mixed[0, 0]+cm_valid_mixed[1, 1]
 ### logistic regression
 
 model_LR = LogisticRegression(random_state=0)
-model_LR.fit(X_train, y_train)
+model_LR.fit(X_train, y_train.values.ravel())
 
 validation_LR = model_LR.predict(X_valid)
 cm_valid_LR = confusion_matrix(y_valid, validation_LR)
@@ -93,13 +93,15 @@ print("% of corrected predictions [LR]: ", (cm_valid_LR[0, 0]+cm_valid_LR[1, 1])
 
 # cross-val
 
-s = cross_val_score(model_LR, X_full, y_full)
+s = -1 * cross_val_score(model_LR, X_full, y_full.values.ravel(), cv=5, scoring='neg_mean_absolute_error')
+print("cross-validation for LR: ", s)
+print("avg error: ", s.mean())
 
 
 ### k-nn
 
 knn = KNeighborsClassifier(n_neighbors=5)
-knn.fit(X_train, y_train)
+knn.fit(X_train, y_train.values.ravel())
 
 validation_KNN = knn.predict(X_valid)
 cm_valid_KNN = confusion_matrix(y_valid, validation_KNN)
