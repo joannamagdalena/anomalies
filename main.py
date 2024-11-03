@@ -8,6 +8,7 @@ from sklearn.neighbors import LocalOutlierFactor
 from preprocessing import data_preprocessing
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.model_selection import cross_val_score
 
 
 dataset_train_full = pd.read_csv("../unsw-nb15/UNSW_NB15_training-set.csv")
