@@ -24,7 +24,7 @@ dataset_test[type_change] = dataset_test[type_change].astype(str)
 #dataset_train["label"] = 1 - dataset_train["label"]
 #dataset_test["label"] = 1 - dataset_train["label"]
 
-X_train, y_train, X_valid, y_valid, X_test, y_test = data_preprocessing(dataset_train, dataset_test)
+X_train, y_train, X_valid, y_valid, X_test, y_test, X_full, y_full = data_preprocessing(dataset_train, dataset_test)
 
 
 ### isolation forest
@@ -90,6 +90,10 @@ validation_LR = model_LR.predict(X_valid)
 cm_valid_LR = confusion_matrix(y_valid, validation_LR)
 print(cm_valid_LR)
 print("% of corrected predictions [LR]: ", (cm_valid_LR[0, 0]+cm_valid_LR[1, 1]) / np.matrix(cm_valid_LR).sum())
+
+# cross-val
+
+s = cross_val_score(model_LR, X_full, y_full)
 
 
 ### k-nn
