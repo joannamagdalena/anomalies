@@ -111,7 +111,7 @@ print("% of corrected predictions [KNN]: ", (cm_valid_KNN[0, 0]+cm_valid_KNN[1, 
 
 ### xbgregressor
 
-xbg = XGBRegressor(n_estimators=500, early_stopping_rounds=5)
+xbg = XGBRegressor(n_estimators=500, early_stopping_rounds=5, learning_rate=0.1)
 xbg.fit(X_train, y_train, eval_set=[(X_valid, y_valid)], verbose=False)
 
 validation_xbg = xbg.predict(X_valid)
