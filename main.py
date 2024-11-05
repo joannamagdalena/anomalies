@@ -109,3 +109,10 @@ cm_valid_KNN = confusion_matrix(y_valid, validation_KNN)
 print(cm_valid_KNN)
 print("% of corrected predictions [KNN]: ", (cm_valid_KNN[0, 0]+cm_valid_KNN[1, 1]) / np.matrix(cm_valid_KNN).sum())
 
+### xbgregressor
+
+xbg = XGBRegressor()
+xbg.fit(X_train, y_train)
+
+validation_xbg = xbg.predict(X_valid)
+print("mean absolute error for XGBRegressor: ", mean_absolute_error(validation_xbg, y_valid))
