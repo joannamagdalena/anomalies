@@ -2,13 +2,14 @@
 import pandas as pd
 import numpy as np
 from sklearn.ensemble import IsolationForest
-from sklearn.metrics import confusion_matrix
+from sklearn.metrics import confusion_matrix, mean_absolute_error
 from sklearn.cluster import KMeans
 from sklearn.neighbors import LocalOutlierFactor
 from preprocessing import data_preprocessing
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import cross_val_score
+from xgboost import XGBRegressor
 
 
 dataset_train_full = pd.read_csv("../unsw-nb15/UNSW_NB15_training-set.csv")
