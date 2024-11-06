@@ -99,6 +99,10 @@ def data_preprocessing(ds_train, ds_test):
         X_train_full[num] = X_train_full[num] / m
         X_test[num] = X_test[num] / m
 
+    # dividing into training and validation datasets
+    X_train, X_valid, y_train, y_valid = train_test_split(X_train_full, y_train_full,
+                                                              train_size=0.8, test_size=0.2, random_state=0)
+
     num_transformer = SimpleImputer(strategy="most_frequent")
     cat_transformer = Pipeline(steps=[("imputer", SimpleImputer(strategy="most_frequent",)),
                                       ("onehot", OneHotEncoder(handle_unknown="ignore"))])
@@ -108,10 +112,8 @@ def data_preprocessing(ds_train, ds_test):
 
     # preprocessing
     pre_X_train_full = pd.DataFrame(preprocessor.fit_transform(X_train_full), columns=preprocessor.get_feature_names_out())
+    pre_X_train = pd.DataFrame(preprocessor.fit_transform(X_train), columns=preprocessor.get_feature_names_out())
+    pre_X_valid = pd.DataFrame(preprocessor.fit_transform(X_valid), columns=preprocessor.get_feature_names_out())
     pre_X_test = pd.DataFrame(preprocessor.fit_transform(X_test), columns=preprocessor.get_feature_names_out())
 
-    #dividing into training and validation datasets
-    X_train, X_valid, y_train, y_valid = train_test_split(pre_X_train_full, y_train_full,
-                                                          train_size=0.8, test_size=0.2, random_state=0)
-
-    return X_train, y_train, X_valid, y_valid, pre_X_test, y_test, pre_X_train_full, y_train_full
+    return pre_X_train, y_train, pre_X_valid, y_valid, pre_X_test, y_test, pre_X_train_full, y_train_full
