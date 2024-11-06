@@ -78,6 +78,8 @@ def data_preprocessing(ds_train, ds_test):
 
     # dividing into training and validation datasets
     ds_train, ds_valid = train_test_split(ds_train, train_size=0.8, test_size=0.2, random_state=0)
+    ds_train = ds_train.reset_index(drop=True)
+    ds_valid = ds_valid.reset_index(drop=True)
 
     # numerical columns
     num_cols = [col for col in ds_train.columns if ds_train[col].dtype in ["int64", "float64"]
