@@ -74,10 +74,10 @@ def choose_categorical_features(ds, possible_features):
     return correlated_features
 
 
-def data_preprocessing(ds_train, ds_test):
+def data_preprocessing(ds_train_full, ds_test):
 
     # dividing into training and validation datasets
-    ds_train, ds_valid = train_test_split(ds_train, train_size=0.8, test_size=0.2, random_state=0)
+    ds_train, ds_valid = train_test_split(ds_train_full, train_size=0.8, test_size=0.2, random_state=0)
     ds_train = ds_train.reset_index(drop=True)
     ds_valid = ds_valid.reset_index(drop=True)
 
@@ -102,15 +102,16 @@ def data_preprocessing(ds_train, ds_test):
     y_test = pd.DataFrame(ds_test["label"].copy())
 
     # additional full dataset: train + valid
-    X_train_full = pd.concat([X_train,X_valid])
-    y_train_full = pd.concat([y_train,y_valid])
+    X_train_full = ds_train_full[num_features_for_training + cat_features_for_training].copy()
+    y_train_full = pd.DataFrame(ds_train_full["label"].copy())
 
     # regularization
     for num in num_features_for_training:
         m = max(abs(max(X_train_full[num])), abs(max(X_test[num])))
         X_train_full[num] = X_train_full[num] / m
         X_test[num] = X_test[num] / m
-
+        X_train[num] = X_train[num] / m
+        X_valid[num] = X_valid[num] / m
 
     num_transformer = SimpleImputer(strategy="most_frequent")
     cat_transformer = Pipeline(steps=[("imputer", SimpleImputer(strategy="most_frequent",)),
@@ -124,5 +125,21 @@ def data_preprocessing(ds_train, ds_test):
     pre_X_train = pd.DataFrame(preprocessor.fit_transform(X_train), columns=preprocessor.get_feature_names_out())
     pre_X_valid = pd.DataFrame(preprocessor.fit_transform(X_valid), columns=preprocessor.get_feature_names_out())
     pre_X_test = pd.DataFrame(preprocessor.fit_transform(X_test), columns=preprocessor.get_feature_names_out())
+
+    # fixing missing columns
+    training_columns = pre_X_train.columns
+    validation_columns = pre_X_valid.columns
+    test_columns = pre_X_test.columns
+
+    missing_validation_columns = list(set(training_columns) - set(validation_columns))
+    missing_test_columns = list(set(training_columns) - set(test_columns))
+
+    for col in missing_validation_columns:
+        pre_X_valid[col] = 0
+    pre_X_valid = pre_X_valid[training_columns]
+
+    for col in missing_test_columns:
+        pre_X_test[col] = 0
+    pre_X_test = pre_X_test[training_columns]
 
     return pre_X_train, y_train, pre_X_valid, y_valid, pre_X_test, y_test, pre_X_train_full, y_train_full
