@@ -123,9 +123,16 @@ print("mean absolute error for XGBRegressor: ", mean_absolute_error(validation_x
 # permutation importance for xbgregressor
 #permutations = PermutationImportance(xbg, random_state=1).fit(X_train, y_train)
 #print(eli5.format_as_text(eli5.show_weights(permutations, feature_names=X_valid.columns.tolist())))
-permutations = permutation_importance(xbg, X_valid, y_valid, n_repeats=30, random_state=0)
-print(xbg.score(X_valid, y_valid))
+permutations = permutation_importance(xbg, X_valid, y_valid, n_repeats=30, random_state=0, scoring="neg_mean_absolute_error")
 for i in permutations.importances_mean.argsort()[::-1]:
     print(f"{X_valid.columns.tolist()[i]:<8}", " ",
           f"{permutations.importances_mean[i]:.3f}", " ",
           f" +/- {permutations.importances_std[i]:.3f}")
+
+# comparison
+X_train_2 = X_train[["num__sttl","cat__state_FIN","cat__state_REQ"]].copy()
+xbg2 = XGBRegressor(n_estimators=500, early_stopping_rounds=5, learning_rate=0.1)
+xbg2.fit(X_train_2, y_train, eval_set=[(X_valid[["num__sttl","cat__state_FIN","cat__state_REQ"]], y_valid)], verbose=False)
+
+validation_xbg2 = xbg2.predict(X_valid[["num__sttl","cat__state_FIN","cat__state_REQ"]])
+print("mean absolute error for XGBRegressor no.2: ", mean_absolute_error(validation_xbg2, y_valid))
