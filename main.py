@@ -32,6 +32,7 @@ dataset_test[type_change] = dataset_test[type_change].astype(str)
 X_train, y_train, X_valid, y_valid, X_test, y_test, X_full, y_full = data_preprocessing(dataset_train, dataset_test)
 
 
+###################################################################################
 ### isolation forest
 
 model_IF = IsolationForest(n_estimators=200, random_state=42, warm_start=True)
@@ -45,6 +46,7 @@ cm_valid_IF = confusion_matrix(y_valid, validation_IF)
 print(cm_valid_IF)
 print("% of corrected predictions [IF]: ", (cm_valid_IF[0, 0]+cm_valid_IF[1, 1])/np.matrix(cm_valid_IF).sum())
 
+###################################################################################
 ### k-means
 
 model_kmeans = KMeans(n_clusters=2, init="k-means++")
@@ -55,7 +57,7 @@ cm_valid_kmeans = confusion_matrix(y_valid, validation_kmeans)
 print(cm_valid_kmeans)
 print("% of corrected predictions [kMeans]: ", (cm_valid_kmeans[0, 0]+cm_valid_kmeans[1, 1]) / np.matrix(cm_valid_kmeans).sum())
 
-
+###################################################################################
 ### LOF
 
 model_LOF = LocalOutlierFactor()
@@ -69,6 +71,7 @@ print("% of corrected predictions [LOF]: ", (cm_valid_LOF[0, 0]+cm_valid_LOF[1, 
 
 
 '''
+###################################################################################
 ### mixed
 
 validation_mixed = []
@@ -86,6 +89,7 @@ print(cm_valid_mixed)
 print("% of corrected predictions: ", (cm_valid_mixed[0, 0]+cm_valid_mixed[1, 1]) / np.matrix(cm_valid_mixed).sum())
 '''
 
+###################################################################################
 ### logistic regression
 
 model_LR = LogisticRegression(random_state=0)
@@ -101,7 +105,7 @@ s = -1 * cross_val_score(model_LR, X_full, y_full.values.ravel(), cv=5, scoring=
 print("cross-validation for LR: ", s)
 print("avg error: ", s.mean())
 
-
+###################################################################################
 ### k-nn
 
 knn = KNeighborsClassifier(n_neighbors=5)
@@ -112,6 +116,7 @@ cm_valid_KNN = confusion_matrix(y_valid, validation_KNN)
 print(cm_valid_KNN)
 print("% of corrected predictions [KNN]: ", (cm_valid_KNN[0, 0]+cm_valid_KNN[1, 1]) / np.matrix(cm_valid_KNN).sum())
 
+###################################################################################
 ### xbgregressor
 
 xbg = XGBRegressor(n_estimators=500, early_stopping_rounds=5, learning_rate=0.1)
