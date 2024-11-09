@@ -1,4 +1,5 @@
 # mrwellsdavid/unsw-nb15
+import eli5
 import pandas as pd
 import numpy as np
 from sklearn.ensemble import IsolationForest
@@ -10,6 +11,8 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import cross_val_score
 from xgboost import XGBRegressor
+import eli5
+from eli5.sklearn import PermutationImportance
 
 
 dataset_train_full = pd.read_csv("../unsw-nb15/UNSW_NB15_training-set.csv")
@@ -92,8 +95,7 @@ cm_valid_LR = confusion_matrix(y_valid, validation_LR)
 print(cm_valid_LR)
 print("% of corrected predictions [LR]: ", (cm_valid_LR[0, 0]+cm_valid_LR[1, 1]) / np.matrix(cm_valid_LR).sum())
 
-# cross-val
-
+# cross-val for logistic regression
 s = -1 * cross_val_score(model_LR, X_full, y_full.values.ravel(), cv=5, scoring='neg_mean_absolute_error')
 print("cross-validation for LR: ", s)
 print("avg error: ", s.mean())
@@ -116,3 +118,7 @@ xbg.fit(X_train, y_train, eval_set=[(X_valid, y_valid)], verbose=False)
 
 validation_xbg = xbg.predict(X_valid)
 print("mean absolute error for XGBRegressor: ", mean_absolute_error(validation_xbg, y_valid))
+
+# permutation importance for xbgregressor
+permutations = PermutationImportance(xbg, random_state=1).fit(X_train, y_train)
+#print(eli5.format_as_text(eli5.show_weights(permutations, feature_names=X_valid.columns.tolist())))
