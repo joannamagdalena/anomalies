@@ -11,8 +11,9 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import cross_val_score
 from xgboost import XGBRegressor
-import eli5
-from eli5.sklearn import PermutationImportance
+#import eli5
+#from eli5.sklearn import PermutationImportance
+from sklearn.inspection import permutation_importance
 
 
 dataset_train_full = pd.read_csv("../unsw-nb15/UNSW_NB15_training-set.csv")
@@ -120,5 +121,11 @@ validation_xbg = xbg.predict(X_valid)
 print("mean absolute error for XGBRegressor: ", mean_absolute_error(validation_xbg, y_valid))
 
 # permutation importance for xbgregressor
-permutations = PermutationImportance(xbg, random_state=1).fit(X_train, y_train)
+#permutations = PermutationImportance(xbg, random_state=1).fit(X_train, y_train)
 #print(eli5.format_as_text(eli5.show_weights(permutations, feature_names=X_valid.columns.tolist())))
+permutations = permutation_importance(xbg, X_valid, y_valid, n_repeats=30, random_state=0)
+print(xbg.score(X_valid, y_valid))
+for i in permutations.importances_mean.argsort()[::-1]:
+    print(f"{X_valid.columns.tolist()[i]:<8}", " ",
+          f"{permutations.importances_mean[i]:.3f}", " ",
+          f" +/- {permutations.importances_std[i]:.3f}")
