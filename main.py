@@ -30,6 +30,7 @@ cursor_db = connection_to_db.cursor()
 cursor_db.execute("select * from UNSW_NB15")
 dataset_train_from_oracle = pd.DataFrame(cursor_db.fetchall())
 dataset_train_from_oracle.columns = [d[0] for d in cursor_db.description]
+cursor_db.close()
 connection_to_db.close()
 
 type_change = ["is_sm_ips_ports", "is_ftp_login", "swin", "dwin"]
