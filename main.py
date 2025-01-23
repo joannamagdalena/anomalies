@@ -16,10 +16,6 @@ from sklearn.inspection import permutation_importance
 
 dataset_train, dataset_test = loading_data.loading_data_from_csv()
 
-type_change = ["is_sm_ips_ports", "is_ftp_login", "swin", "dwin"]
-dataset_train[type_change] = dataset_train[type_change].astype(str)
-dataset_test[type_change] = dataset_test[type_change].astype(str)
-
 #dataset_train["label"] = 1 - dataset_train["label"]
 #dataset_test["label"] = 1 - dataset_train["label"]
 
