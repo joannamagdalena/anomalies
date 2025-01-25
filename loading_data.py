@@ -29,24 +29,43 @@ def loading_data_from_oracle_db():
 
     cursor_db = connection_to_db.cursor()
     cursor_db.execute("select distinct extract(year from loading_date) as year, extract(month from loading_date) as month from UNSW_NB15 where loading_date = (select max(loading_date) from UNSW_NB15)")
-    max_date = cursor_db.fetchall()[0]
+    max_date_dataset_train = cursor_db.fetchall()[0]
+    cursor_db.execute("select distinct extract(year from loading_date) as year, extract(month from loading_date) as month from UNSW_NB15_TEST where loading_date = (select max(loading_date) from UNSW_NB15_TEST)")
+    max_date_dataset_test = cursor_db.fetchall()[0]
     cursor_db.close()
 
     # checking the datasets---if data is missing, loading it
-    if max_date[0] != current_year or max_date[1] != current_month:
-        print("Data was not loaded.")
+    dataset_train_to_load, dataset_test_to_load = loading_data_from_csv()
+    if max_date_dataset_train[0] != current_year or max_date_dataset_train[1] != current_month:
+        print("Training data has not been loaded.")
 
         cursor_db = connection_to_db.cursor()
         cursor_db.execute("select max(nrid) from UNSW_NB15")
         max_nrid = int(cursor_db.fetchall()[0][0])
         cursor_db.close()
 
-        dataset_train_to_load, dataset_test_to_load = loading_data_from_csv()
         cursor_db = connection_to_db.cursor()
         for index, row in dataset_train_to_load.iterrows():
             inp = list(row)
             inp[0] += max_nrid
             command = "insert into UNSW_NB15 values " + "(" + str(inp)[1:-1] + ", TO_DATE('" + current_date + "','YYYY-MM-DD')" + ")"
+            cursor_db.execute(command)
+            connection_to_db.commit()
+        cursor_db.close()
+
+    if max_date_dataset_test[0] != current_year or max_date_dataset_test[1] != current_month:
+        print("Test data has not been loaded.")
+
+        cursor_db = connection_to_db.cursor()
+        cursor_db.execute("select max(nrid) from UNSW_NB15_TEST")
+        max_nrid = int(cursor_db.fetchall()[0][0])
+        cursor_db.close()
+
+        cursor_db = connection_to_db.cursor()
+        for index, row in dataset_test_to_load.iterrows():
+            inp = list(row)
+            inp[0] += max_nrid
+            command = "insert into UNSW_NB15_TEST values " + "(" + str(inp)[1:-1] + ", TO_DATE('" + current_date + "','YYYY-MM-DD')" + ")"
             cursor_db.execute(command)
             connection_to_db.commit()
         cursor_db.close()
