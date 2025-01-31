@@ -5,8 +5,8 @@ from datetime import date
 
 # loading data from csv
 def loading_data_from_csv():
-    dataset_train_full = pd.read_csv("../unsw-nb15/UNSW_NB15_training-set.csv")
-    dataset_test_full = pd.read_csv("../unsw-nb15/UNSW_NB15_testing-set.csv")
+    dataset_train_full = pd.read_csv("../../unsw-nb15/UNSW_NB15_training-set.csv")
+    dataset_test_full = pd.read_csv("../../unsw-nb15/UNSW_NB15_testing-set.csv")
 
     type_change = ["dur","proto","service","state","rate","sload","dload","sinpkt","dinpkt","sjit","djit","tcprtt",
                    "synack","ackdat","attack_cat","label"]
@@ -84,6 +84,3 @@ def loading_data_from_oracle_db():
     connection_to_db.close()
 
     return dataset_train_from_oracle, dataset_test_from_oracle
-
-
-loading_data_from_oracle_db()
