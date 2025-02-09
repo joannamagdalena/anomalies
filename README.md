@@ -14,9 +14,9 @@ Languages, packages, and software used:
 Repository structure:
 
   src/ - source code
-      loading_data.py - data loading from an Oracle database and CSV files
-      main.py - ML model implementation
-      preprocessing.py - data preprocessing
+    loading_data.py - data loading from an Oracle database and CSV files
+    main.py - ML model implementation
+    preprocessing.py - data preprocessing
 
   README.md
 
